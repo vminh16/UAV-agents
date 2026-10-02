@@ -1,6 +1,6 @@
 # `backend/` — Máy chủ trạm / Chi cục
 
-**Owner:** BE — *(điền tên)* · **Đọc trước:** [`docs/03-architecture/40-backend.md`](../docs/03-architecture/40-backend.md), [`docs/01-PRD.md`](../docs/01-PRD.md) §6–7, [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
+**Owner:** BE — *Lê Sỹ Long Nhật* · **Đọc trước:** [`docs/03-architecture/40-backend.md`](../docs/03-architecture/40-backend.md), [`docs/01-PRD.md`](../docs/01-PRD.md) §6–7, [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
 
 > Nơi **con người** ra quyết định: tiếp nhận cảnh báo, tính prior b₀, phê duyệt bay, giám sát, lưu bằng chứng chỉ-thêm, **diễn giải kết luận onboard thành kết quả vận hành**.
 
