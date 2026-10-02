@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/mission_request.schema.json",
+  "title": "I-01 mission_request (backend → embedded, agents)",
+  "description": "Nhiệm vụ đã được người trực phê duyệt. Nguồn prior DUY NHẤT của hệ thống là prior.b0.",
+  "type": "object",
+  "required": [
+    "header",
+    "alert",
+    "prior",
+    "risk_targets",
+    "budget",
+    "geofence",
+    "home",
+    "profiles",
+    "approval"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "mission_request"
+            }
+          }
+        }
+      ]
+    },
+    "alert": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alert_id",
+        "source",
+        "reported_utc",
+        "target",
+        "location_uncertainty_m"
+      ],
+      "properties": {
+        "alert_id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "TOWER_CAMERA",
+            "SATELLITE",
+            "CITIZEN",
+            "MANUAL"
+          ]
+        },
+        "reported_utc": {
+          "$ref": "common.schema.json#/$defs/utc"
+        },
+        "target": {
+          "$ref": "common.schema.json#/$defs/geo_point"
+        },
+        "location_uncertainty_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "prior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b0",
+        "model",
+        "explanation"
+      ],
+      "properties": {
+        "b0": {
+          "$ref": "common.schema.json#/$defs/probability"
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "explanation": {
+          "type": "string"
+        }
+      }
+    },
+    "risk_targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alpha_false_alarm",
+        "beta_miss"
+      ],
+      "properties": {
+        "alpha_false_alarm": {
+          "$ref": "common.schema.json#/$defs/probability"
+        },
+        "beta_miss": {
+          "$ref": "common.schema.json#/$defs/probability"
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_views",
+        "max_on_station_s"
+      ],
+      "properties": {
+        "max_views": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "max_on_station_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "geofence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "polygon",
+        "min_height_agl_m",
+        "max_height_agl_m"
+      ],
+      "properties": {
+        "polygon": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "common.schema.json#/$defs/geo_point"
+          }
+        },
+        "min_height_agl_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_height_agl_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "home": {
+      "$ref": "common.schema.json#/$defs/geo_point"
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "cv"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string"
+        },
+        "cv": {
+          "type": "string"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_id",
+        "approved_utc"
+      ],
+      "properties": {
+        "operator_id": {
+          "type": "string"
+        },
+        "approved_utc": {
+          "$ref": "common.schema.json#/$defs/utc"
+        }
+      }
+    }
+  }
+}

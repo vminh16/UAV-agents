@@ -1,0 +1,22 @@
+name: contracts
+
+on:
+  pull_request:
+    paths:
+      - "docs/interfaces/**"
+      - ".github/workflows/contracts.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/interfaces/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r docs/interfaces/tools/requirements.txt
+      - run: python docs/interfaces/tools/validate.py

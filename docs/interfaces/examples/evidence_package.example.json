@@ -1,0 +1,447 @@
+{
+  "header": {
+    "schema": "evidence_package",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a14-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:21:02.000Z",
+    "producer": "embedded/mission_executor@0.1.0"
+  },
+  "summary": {
+    "started_utc": "2026-10-02T03:10:05.300Z",
+    "ended_utc": "2026-10-02T03:20:40.000Z",
+    "final_phase": "COMPLETED"
+  },
+  "decision": {
+    "header": {
+      "schema": "agent_decision",
+      "schema_version": "0.1.0",
+      "msg_id": "7f3c2a10-5b6e-4c1d-9a12-0c1d2e3f4a5b",
+      "uav_id": "uav-01",
+      "mission_id": "M-20261002-001",
+      "stamp_utc": "2026-10-02T03:14:35.950Z",
+      "producer": "agents/agent_runtime@0.1.0"
+    },
+    "decision": "SMOKE_CONFIRMED",
+    "reason": "THRESHOLD_REACHED",
+    "final_belief": {
+      "p_smoke": 0.9263,
+      "log_odds": 2.531,
+      "sum_llr_effective": 3.15
+    },
+    "thresholds": {
+      "method": "sprt_wald",
+      "upper": 2.9755,
+      "lower": -3.8607,
+      "space": "SUM_LLR",
+      "derivation": "upper = ln((1-β)/α), lower = ln(β/(1-α)) với α = 0.05, β = 0.02 từ mission_request.risk_targets"
+    },
+    "counts": {
+      "views_commanded": 3,
+      "views_reached": 2,
+      "views_rejected": 1,
+      "observations_valid": 2,
+      "observations_invalid": 0,
+      "observation_timeouts": 0
+    },
+    "steps": [
+      {
+        "header": {
+          "schema": "agent_step",
+          "schema_version": "0.1.0",
+          "msg_id": "7f3c2a10-5b6e-4c1d-9a10-0c1d2e3f4a5b",
+          "uav_id": "uav-01",
+          "mission_id": "M-20261002-001",
+          "stamp_utc": "2026-10-02T03:13:41.200Z",
+          "producer": "agents/agent_runtime@0.1.0"
+        },
+        "step": 0,
+        "view_id": 0,
+        "observation_ref": {
+          "clip_id": "M-20261002-001/v0",
+          "valid": true,
+          "llr": 2.1,
+          "llr_effective": 1.47
+        },
+        "belief_before": {
+          "p_smoke": 0.35,
+          "log_odds": -0.619,
+          "sum_llr_effective": 0.0
+        },
+        "belief_after": {
+          "p_smoke": 0.7008,
+          "log_odds": 0.851,
+          "sum_llr_effective": 1.47
+        },
+        "candidates": [
+          {
+            "view": {
+              "bearing_from_target_deg": 135.0,
+              "horizontal_range_m": 150.0,
+              "height_above_target_m": 100.0,
+              "gimbal": {
+                "mode": "LOOK_AT_TARGET",
+                "pitch_offset_deg": 5.0,
+                "yaw_offset_deg": 0.0
+              },
+              "hover_s": 2.0
+            },
+            "score": 0.042,
+            "cost_s": 38.5,
+            "feasible": true
+          },
+          {
+            "view": {
+              "bearing_from_target_deg": 90.0,
+              "horizontal_range_m": 200.0,
+              "height_above_target_m": 80.0,
+              "gimbal": {
+                "mode": "LOOK_AT_TARGET",
+                "pitch_offset_deg": 5.0,
+                "yaw_offset_deg": 0.0
+              },
+              "hover_s": 2.0
+            },
+            "score": 0.047,
+            "cost_s": 31.0,
+            "feasible": false,
+            "note": "REJECTED: TERRAIN_CLEARANCE"
+          }
+        ],
+        "chosen": {
+          "action": "VIEW",
+          "view_id": 1,
+          "view": {
+            "bearing_from_target_deg": 135.0,
+            "horizontal_range_m": 150.0,
+            "height_above_target_m": 100.0,
+            "gimbal": {
+              "mode": "LOOK_AT_TARGET",
+              "pitch_offset_deg": 5.0,
+              "yaw_offset_deg": 0.0
+            },
+            "hover_s": 2.0
+          },
+          "decision": null
+        },
+        "rationale": "Λ = 1.47 chưa vượt ngưỡng [-3.86, 2.98]. Chọn phương vị 135° vì KL kỳ vọng/giây cao nhất trong các góc khả thi; góc 90° bị từ chối do địa hình.",
+        "warnings": [],
+        "provenance": {
+          "component": "agents/agent_runtime",
+          "version": "0.1.0",
+          "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+          "git_sha": "5f726af",
+          "methods": {
+            "belief.fusion": "tempered_bayes",
+            "observation_model": "binned_gaussian",
+            "view_generator": "lattice",
+            "planner": "chernoff_kl_per_cost",
+            "stopping": "sprt_wald",
+            "cost_model": "flight_time"
+          },
+          "artifacts": [
+            {
+              "name": "observation_model",
+              "version": "0.1.0"
+            }
+          ],
+          "warnings": []
+        }
+      },
+      {
+        "header": {
+          "schema": "agent_step",
+          "schema_version": "0.1.0",
+          "msg_id": "7f3c2a10-5b6e-4c1d-9a11-0c1d2e3f4a5b",
+          "uav_id": "uav-01",
+          "mission_id": "M-20261002-001",
+          "stamp_utc": "2026-10-02T03:14:35.900Z",
+          "producer": "agents/agent_runtime@0.1.0"
+        },
+        "step": 1,
+        "view_id": 1,
+        "observation_ref": {
+          "clip_id": "M-20261002-001/v1",
+          "valid": true,
+          "llr": 2.4,
+          "llr_effective": 1.68
+        },
+        "belief_before": {
+          "p_smoke": 0.7008,
+          "log_odds": 0.851,
+          "sum_llr_effective": 1.47
+        },
+        "belief_after": {
+          "p_smoke": 0.9263,
+          "log_odds": 2.531,
+          "sum_llr_effective": 3.15
+        },
+        "candidates": [],
+        "chosen": {
+          "action": "TERMINATE",
+          "view_id": null,
+          "view": null,
+          "decision": "SMOKE_CONFIRMED"
+        },
+        "rationale": "Λ = 3.15 ≥ ngưỡng trên 2.98 (SPRT, α = 0.05, β = 0.02) → SMOKE_CONFIRMED sau 2 góc nhìn hợp lệ.",
+        "warnings": [],
+        "provenance": {
+          "component": "agents/agent_runtime",
+          "version": "0.1.0",
+          "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+          "git_sha": "5f726af",
+          "methods": {
+            "belief.fusion": "tempered_bayes",
+            "observation_model": "binned_gaussian",
+            "view_generator": "lattice",
+            "planner": "chernoff_kl_per_cost",
+            "stopping": "sprt_wald",
+            "cost_model": "flight_time"
+          },
+          "artifacts": [
+            {
+              "name": "observation_model",
+              "version": "0.1.0"
+            }
+          ],
+          "warnings": []
+        }
+      }
+    ],
+    "observation_model_version": "0.1.0",
+    "provenance": {
+      "component": "agents/agent_runtime",
+      "version": "0.1.0",
+      "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+      "git_sha": "5f726af",
+      "methods": {
+        "belief.fusion": "tempered_bayes",
+        "observation_model": "binned_gaussian",
+        "view_generator": "lattice",
+        "planner": "chernoff_kl_per_cost",
+        "stopping": "sprt_wald",
+        "cost_model": "flight_time"
+      },
+      "artifacts": [
+        {
+          "name": "observation_model",
+          "version": "0.1.0"
+        }
+      ],
+      "warnings": []
+    }
+  },
+  "observations": [
+    {
+      "header": {
+        "schema": "observation",
+        "schema_version": "0.1.0",
+        "msg_id": "7f3c2a10-5b6e-4c1d-9a13-0c1d2e3f4a5b",
+        "uav_id": "uav-01",
+        "mission_id": "M-20261002-001",
+        "stamp_utc": "2026-10-02T03:13:40.900Z",
+        "producer": "cv/perception_service@0.1.0"
+      },
+      "view_id": 0,
+      "clip_id": "M-20261002-001/v0",
+      "valid": true,
+      "invalid_reasons": [],
+      "llr": 2.1,
+      "observation_model_version": "0.1.0",
+      "context": {
+        "range_m": 180.3,
+        "height_above_target_m": 100.0,
+        "sun_rel_azimuth_deg": 76.7,
+        "sun_elevation_deg": 52.7,
+        "target_in_fov": true,
+        "base_occlusion_ratio": null
+      },
+      "smoke": {
+        "detected": true,
+        "max_score": 0.81,
+        "regions": [
+          {
+            "bbox_norm": [
+              0.44,
+              0.21,
+              0.61,
+              0.58
+            ],
+            "score": 0.81,
+            "area_frac": 0.063
+          }
+        ]
+      },
+      "features": {
+        "flow_vertical_mps": 1.34,
+        "flow_divergence": 0.21,
+        "flow_coherence": 0.77,
+        "source_point_score": 0.68
+      },
+      "landcover_at_base": null,
+      "latency_ms": {
+        "total": 3380.0,
+        "decode": 410.0,
+        "stabilize": 520.0,
+        "detect": 1150.0,
+        "flow": 980.0,
+        "classify": 40.0
+      },
+      "provenance": {
+        "component": "cv/perception_service",
+        "version": "0.1.0",
+        "config_hash": "sha256:6d5906050e06d6c7ac0114e202a7c8a2ccbef2ee7a922ac7f0a88825b769defe",
+        "git_sha": "5f726af",
+        "methods": {
+          "quality_gate": "heuristic_gate",
+          "stabilization": "ecc_affine",
+          "detector": "yolo11n",
+          "plume_tracker": "iou_tracker",
+          "motion_features": "dis_flow",
+          "clip_classifier": "gbdt",
+          "calibrator": "isotonic_binned",
+          "runtime": "ncnn"
+        },
+        "artifacts": [
+          {
+            "name": "cv-bundle",
+            "version": "0.1.0"
+          },
+          {
+            "name": "observation_model",
+            "version": "0.1.0"
+          }
+        ]
+      }
+    },
+    {
+      "header": {
+        "schema": "observation",
+        "schema_version": "0.1.0",
+        "msg_id": "7f3c2a10-5b6e-4c1d-9a08-0c1d2e3f4a5b",
+        "uav_id": "uav-01",
+        "mission_id": "M-20261002-001",
+        "stamp_utc": "2026-10-02T03:14:35.700Z",
+        "producer": "cv/perception_service@0.1.0"
+      },
+      "view_id": 1,
+      "clip_id": "M-20261002-001/v1",
+      "valid": true,
+      "invalid_reasons": [],
+      "llr": 2.4,
+      "observation_model_version": "0.1.0",
+      "context": {
+        "range_m": 180.3,
+        "height_above_target_m": 100.0,
+        "sun_rel_azimuth_deg": 166.9,
+        "sun_elevation_deg": 52.7,
+        "target_in_fov": true,
+        "base_occlusion_ratio": null
+      },
+      "smoke": {
+        "detected": true,
+        "max_score": 0.81,
+        "regions": [
+          {
+            "bbox_norm": [
+              0.44,
+              0.21,
+              0.61,
+              0.58
+            ],
+            "score": 0.81,
+            "area_frac": 0.063
+          }
+        ]
+      },
+      "features": {
+        "flow_vertical_mps": 1.34,
+        "flow_divergence": 0.21,
+        "flow_coherence": 0.77,
+        "source_point_score": 0.68
+      },
+      "landcover_at_base": null,
+      "latency_ms": {
+        "total": 3380.0,
+        "decode": 410.0,
+        "stabilize": 520.0,
+        "detect": 1150.0,
+        "flow": 980.0,
+        "classify": 40.0
+      },
+      "provenance": {
+        "component": "cv/perception_service",
+        "version": "0.1.0",
+        "config_hash": "sha256:6d5906050e06d6c7ac0114e202a7c8a2ccbef2ee7a922ac7f0a88825b769defe",
+        "git_sha": "5f726af",
+        "methods": {
+          "quality_gate": "heuristic_gate",
+          "stabilization": "ecc_affine",
+          "detector": "yolo11n",
+          "plume_tracker": "iou_tracker",
+          "motion_features": "dis_flow",
+          "clip_classifier": "gbdt",
+          "calibrator": "isotonic_binned",
+          "runtime": "ncnn"
+        },
+        "artifacts": [
+          {
+            "name": "cv-bundle",
+            "version": "0.1.0"
+          },
+          {
+            "name": "observation_model",
+            "version": "0.1.0"
+          }
+        ]
+      }
+    }
+  ],
+  "files": [
+    {
+      "kind": "CLIP",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/clips/v0.mp4",
+      "sha256": "1b958431dbcffaa96530ee8957f484303a799a58c05c4ad84a5e4e5f2e28d8c7",
+      "size_bytes": 4183220,
+      "clip_id": "M-20261002-001/v0"
+    },
+    {
+      "kind": "CLIP",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/clips/v1.mp4",
+      "sha256": "17140060a7d3e4fbee74440df6b6bb0c7937c2e2dee3695e07fde3ee11a23dce",
+      "size_bytes": 4210877,
+      "clip_id": "M-20261002-001/v1"
+    },
+    {
+      "kind": "FRAMES_META",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/clips/v1.frames.jsonl",
+      "sha256": "c628a4efc105c2ea894fa244f17c6ca6ce7aae80febf3d4052c4dc8f89424c58",
+      "size_bytes": 18230,
+      "clip_id": "M-20261002-001/v1"
+    },
+    {
+      "kind": "FLIGHT_LOG",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/logs/00000042.BIN",
+      "sha256": "e94d58bf316ea72a263cb8015ff8936e7ef69c0190ab70ec3daa0a6ba3b099c4",
+      "size_bytes": 9811456,
+      "clip_id": null
+    },
+    {
+      "kind": "MESSAGE_LOG",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/logs/message_log.jsonl",
+      "sha256": "f9b315022f91ef629cab828723ad7a9fead74393a119aa3c2318cd9e961c706b",
+      "size_bytes": 288114,
+      "clip_id": null
+    },
+    {
+      "kind": "CONFIG",
+      "uri": "https://backend.tram-01.local/evidence/M-20261002-001/configs/effective.json",
+      "sha256": "55f8ef574661ee04e53c7366709cc30e1930c388282d256f1dfbbf0a2a9f16fd",
+      "size_bytes": 9120,
+      "clip_id": null
+    }
+  ],
+  "upload_status": "COMPLETE",
+  "missing": []
+}

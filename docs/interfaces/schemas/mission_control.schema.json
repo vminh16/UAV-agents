@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/mission_control.schema.json",
+  "title": "I-11 mission_control (backend → embedded)",
+  "description": "Lệnh của người trực. MVP chỉ có CANCEL_RTL.",
+  "type": "object",
+  "required": [
+    "header",
+    "command",
+    "issued_by",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "mission_control"
+            }
+          }
+        }
+      ]
+    },
+    "command": {
+      "enum": [
+        "CANCEL_RTL"
+      ]
+    },
+    "issued_by": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    }
+  }
+}

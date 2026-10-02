@@ -1,0 +1,15 @@
+{
+  "header": {
+    "schema": "safety_event",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a15-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:17:12.000Z",
+    "producer": "embedded/safety_supervisor@0.1.0"
+  },
+  "event": "BATTERY_LOW",
+  "severity": "ABORT",
+  "action_taken": "RTL",
+  "detail": "on_station_margin_s = 0 (dự trữ 25% + năng lượng về nhà)"
+}

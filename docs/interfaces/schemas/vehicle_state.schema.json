@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/vehicle_state.schema.json",
+  "title": "I-03 vehicle_state (embedded → agents, backend)",
+  "description": "Trạng thái phương tiện. on_station_margin_s do embedded tính (đã trừ năng lượng về nhà + dự trữ); agent KHÔNG tự tính pin.",
+  "type": "object",
+  "required": [
+    "header",
+    "pose",
+    "velocity_ned_mps",
+    "battery",
+    "on_station_margin_s",
+    "fc",
+    "link",
+    "mission_phase"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "vehicle_state"
+            }
+          }
+        }
+      ]
+    },
+    "pose": {
+      "$ref": "common.schema.json#/$defs/pose"
+    },
+    "velocity_ned_mps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "n",
+        "e",
+        "d"
+      ],
+      "properties": {
+        "n": {
+          "type": "number"
+        },
+        "e": {
+          "type": "number"
+        },
+        "d": {
+          "type": "number"
+        }
+      }
+    },
+    "battery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pct",
+        "voltage_v"
+      ],
+      "properties": {
+        "pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "voltage_v": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "on_station_margin_s": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "armed",
+        "gps_fix",
+        "satellites"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string"
+        },
+        "armed": {
+          "type": "boolean"
+        },
+        "gps_fix": {
+          "enum": [
+            "NO_FIX",
+            "FIX_2D",
+            "FIX_3D",
+            "DGPS",
+            "RTK_FLOAT",
+            "RTK_FIXED"
+          ]
+        },
+        "satellites": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ground_connected"
+      ],
+      "properties": {
+        "ground_connected": {
+          "type": "boolean"
+        }
+      }
+    },
+    "mission_phase": {
+      "$ref": "common.schema.json#/$defs/mission_phase"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "header": {
+    "schema": "vehicle_state",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a03-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:14:30.500Z",
+    "producer": "embedded/safety_supervisor@0.1.0"
+  },
+  "pose": {
+    "lat_deg": 21.822659,
+    "lon_deg": 105.215842,
+    "alt_amsl_m": 288.6,
+    "height_agl_m": 104.2,
+    "yaw_deg": 315.2,
+    "gimbal_pitch_deg": -28.9,
+    "gimbal_yaw_deg": 315.0
+  },
+  "velocity_ned_mps": {
+    "n": 0.05,
+    "e": -0.03,
+    "d": 0.01
+  },
+  "battery": {
+    "pct": 71.5,
+    "voltage_v": 15.42
+  },
+  "on_station_margin_s": 412.0,
+  "fc": {
+    "mode": "GUIDED",
+    "armed": true,
+    "gps_fix": "FIX_3D",
+    "satellites": 17
+  },
+  "link": {
+    "ground_connected": true
+  },
+  "mission_phase": "RECORDING"
+}

@@ -1,0 +1,12 @@
+# Điền tên GitHub của từng owner, bỏ dấu # ở đầu dòng tương ứng.
+# GitHub sẽ tự yêu cầu owner duyệt PR chạm vào thư mục của họ.
+# Xem CONTRIBUTING.md §1.
+
+# /agents/                          @<github-AGT>
+# /cv/                              @<github-CV>
+# /embedded/                        @<github-EMB>
+# /backend/                         @<github-BE>
+# /docs/                            @<github-truong-nhom>
+# /docs/interfaces/                 @<github-truong-nhom> @<github-AGT> @<github-CV> @<github-EMB> @<github-BE>
+# /docs/03-architecture/00-overview.md   @<github-truong-nhom> @<github-AGT> @<github-CV> @<github-EMB> @<github-BE>
+# /docs/03-architecture/50-interfaces.md @<github-truong-nhom> @<github-AGT> @<github-CV> @<github-EMB> @<github-BE>

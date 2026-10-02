@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/safety_event.schema.json",
+  "title": "I-10 safety_event (embedded → agents, backend)",
+  "description": "Sự kiện an toàn. severity=ABORT ⇒ agent kết thúc ngay với UNDETERMINED.",
+  "type": "object",
+  "required": [
+    "header",
+    "event",
+    "severity",
+    "action_taken"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "safety_event"
+            }
+          }
+        }
+      ]
+    },
+    "event": {
+      "enum": [
+        "BATTERY_LOW",
+        "BATTERY_CRITICAL",
+        "LINK_LOST",
+        "LINK_RESTORED",
+        "GEOFENCE_BREACH",
+        "FC_FAILSAFE",
+        "PILOT_OVERRIDE",
+        "MISSION_CANCELLED",
+        "MISSION_TIMEOUT",
+        "COMPANION_FAULT"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "INFO",
+        "WARNING",
+        "ABORT"
+      ]
+    },
+    "action_taken": {
+      "enum": [
+        "NONE",
+        "HOLD",
+        "RTL",
+        "LAND"
+      ]
+    },
+    "detail": {
+      "type": "string"
+    }
+  }
+}

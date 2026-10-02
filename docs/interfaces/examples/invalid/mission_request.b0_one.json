@@ -1,0 +1,72 @@
+{
+  "header": {
+    "schema": "mission_request",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a01-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:10:05.120Z",
+    "producer": "backend/mission_manager@0.1.0"
+  },
+  "alert": {
+    "alert_id": "ALR-20261002-0007",
+    "source": "TOWER_CAMERA",
+    "reported_utc": "2026-10-02T03:02:41.000Z",
+    "target": {
+      "lat_deg": 21.823614,
+      "lon_deg": 105.214821
+    },
+    "location_uncertainty_m": 80.0
+  },
+  "prior": {
+    "b0": 1.0,
+    "model": {
+      "name": "landcover_table",
+      "version": "0.1.0"
+    },
+    "explanation": "Rừng tự nhiên, mùa khô, nguồn chòi canh → 0,35 (bảng chuyên gia v0.1, elicited)"
+  },
+  "risk_targets": {
+    "alpha_false_alarm": 0.05,
+    "beta_miss": 0.02
+  },
+  "budget": {
+    "max_views": 6,
+    "max_on_station_s": 300.0
+  },
+  "geofence": {
+    "polygon": [
+      {
+        "lat_deg": 21.815,
+        "lon_deg": 105.205
+      },
+      {
+        "lat_deg": 21.83,
+        "lon_deg": 105.205
+      },
+      {
+        "lat_deg": 21.83,
+        "lon_deg": 105.223
+      },
+      {
+        "lat_deg": 21.815,
+        "lon_deg": 105.223
+      }
+    ],
+    "min_height_agl_m": 40.0,
+    "max_height_agl_m": 120.0
+  },
+  "home": {
+    "lat_deg": 21.819005,
+    "lon_deg": 105.210037,
+    "alt_amsl_m": 142.0
+  },
+  "profiles": {
+    "agent": "mvp_default",
+    "cv": "mvp_rpi5"
+  },
+  "approval": {
+    "operator_id": "kiemlam.truc01",
+    "approved_utc": "2026-10-02T03:09:58.400Z"
+  }
+}

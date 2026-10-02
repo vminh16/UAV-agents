@@ -1,0 +1,28 @@
+{
+  "header": {
+    "schema": "view_command",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a04-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:13:41.210Z",
+    "producer": "agents/agent_runtime@0.1.0"
+  },
+  "view_id": 1,
+  "view": {
+    "bearing_from_target_deg": 360,
+    "horizontal_range_m": 150.0,
+    "height_above_target_m": 100.0,
+    "gimbal": {
+      "mode": "LOOK_AT_TARGET",
+      "pitch_offset_deg": 5.0,
+      "yaw_offset_deg": 0.0
+    },
+    "hover_s": 2.0
+  },
+  "intent": {
+    "rationale": "KL kỳ vọng/giây cao nhất (0,042/s): thuận nắng, cách góc 0 một 90°",
+    "expected_score": 0.042,
+    "expected_cost_s": 38.5
+  }
+}

@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Dữ liệu, mô hình, log — KHÔNG commit (dùng kho artifact chung)
+data/
+!cv/data/
+cv/data/*
+!cv/data/README.md
+*.mp4
+*.avi
+*.mkv
+*.jpg
+*.jpeg
+*.png
+!docs/**/*.png
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.param.bin
+*.ncnn.*
+*.tif
+*.tiff
+*.BIN
+*.bin
+*.tlog
+*.jsonl
+artifacts/
+runs/
+logs/
+missions/
+
+# Bí mật
+*.pem
+*.key
+secrets*.yaml
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/

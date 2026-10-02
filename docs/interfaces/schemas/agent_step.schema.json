@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/agent_step.schema.json",
+  "title": "I-12 agent_step (agents → backend)",
+  "description": "Vết một bước quyết định của agent (giải trình).",
+  "type": "object",
+  "required": [
+    "header",
+    "step",
+    "view_id",
+    "observation_ref",
+    "belief_before",
+    "belief_after",
+    "candidates",
+    "chosen",
+    "rationale",
+    "warnings",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "agent_step"
+            }
+          }
+        }
+      ]
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "view_id": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observation_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "clip_id",
+            "valid",
+            "llr",
+            "llr_effective"
+          ],
+          "properties": {
+            "clip_id": {
+              "$ref": "common.schema.json#/$defs/clip_id"
+            },
+            "valid": {
+              "type": "boolean"
+            },
+            "llr": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "llr_effective": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "belief_before": {
+      "$ref": "common.schema.json#/$defs/belief"
+    },
+    "belief_after": {
+      "$ref": "common.schema.json#/$defs/belief"
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "view",
+          "score",
+          "cost_s",
+          "feasible"
+        ],
+        "properties": {
+          "view": {
+            "$ref": "common.schema.json#/$defs/view_spec"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cost_s": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "feasible": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "chosen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "VIEW",
+            "TERMINATE"
+          ]
+        },
+        "view_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "view": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/view_spec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/onboard_decision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "$ref": "common.schema.json#/$defs/provenance"
+    }
+  }
+}

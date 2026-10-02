@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/observation.schema.json",
+  "title": "I-07 observation (cv → agents)",
+  "description": "Một quan sát cho MỘT clip. llr = ln p(z|SMOKE,c) - ln p(z|NO_SMOKE,c), đã hiệu chỉnh, KHÔNG phải posterior. valid=false thì llr=null.",
+  "type": "object",
+  "required": [
+    "header",
+    "view_id",
+    "clip_id",
+    "valid",
+    "invalid_reasons",
+    "llr",
+    "observation_model_version",
+    "context",
+    "smoke",
+    "features",
+    "landcover_at_base",
+    "latency_ms",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "observation"
+            }
+          }
+        }
+      ]
+    },
+    "view_id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "clip_id": {
+      "$ref": "common.schema.json#/$defs/clip_id"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "invalid_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "BLUR",
+          "OVEREXPOSED",
+          "UNDEREXPOSED",
+          "SUN_GLARE",
+          "TARGET_OUT_OF_FOV",
+          "DECODE_ERROR",
+          "INSUFFICIENT_FRAMES",
+          "PROCESSING_TIMEOUT"
+        ]
+      }
+    },
+    "llr": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -50,
+          "maximum": 50
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observation_model_version": {
+      "type": "string"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "range_m",
+        "height_above_target_m",
+        "sun_rel_azimuth_deg",
+        "sun_elevation_deg",
+        "target_in_fov",
+        "base_occlusion_ratio"
+      ],
+      "properties": {
+        "range_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height_above_target_m": {
+          "type": "number"
+        },
+        "sun_rel_azimuth_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 180,
+          "description": "0 = nhìn thẳng vào mặt trời (ngược nắng)"
+        },
+        "sun_elevation_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "target_in_fov": {
+          "type": "boolean"
+        },
+        "base_occlusion_ratio": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "smoke": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "detected",
+        "max_score",
+        "regions"
+      ],
+      "description": "Chỉ để giải trình/hiển thị. Agent KHÔNG dùng để ra quyết định.",
+      "properties": {
+        "detected": {
+          "type": "boolean"
+        },
+        "max_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "bbox_norm",
+              "score"
+            ],
+            "properties": {
+              "bbox_norm": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "area_frac": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "description": "Đặc trưng có tên (debug, giải trình). Tên do phiên bản pipeline CV định nghĩa.",
+      "additionalProperties": {
+        "type": [
+          "number",
+          "null"
+        ]
+      }
+    },
+    "landcover_at_base": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "class_probs",
+            "method"
+          ],
+          "properties": {
+            "class_probs": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "CLOSED_CANOPY",
+                "CLEARED_OR_CULTIVATED",
+                "GRASS_SHRUB",
+                "WATER",
+                "BUILT",
+                "OTHER"
+              ],
+              "properties": {
+                "CLOSED_CANOPY": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "CLEARED_OR_CULTIVATED": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "GRASS_SHRUB": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "WATER": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "BUILT": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "OTHER": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "method": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "latency_ms": {
+      "type": "object",
+      "required": [
+        "total"
+      ],
+      "properties": {
+        "total": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "provenance": {
+      "$ref": "common.schema.json#/$defs/provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "valid": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "llr": {
+            "type": "number"
+          },
+          "invalid_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "valid": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "llr": {
+            "type": "null"
+          },
+          "invalid_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

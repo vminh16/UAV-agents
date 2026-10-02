@@ -1,0 +1,68 @@
+# Cấu hình mặc định của backend/.
+# Nguyên tắc (ADR-004): prior, luật phân xử, thông báo đều chọn bằng TÊN + bảng cấu hình; mỗi luật có ID để truy vết.
+
+schema_version: "0.1.0"
+
+alert_sources:
+  enabled: [manual]               # manual | tower_camera_api | firms_viirs | citizen_hotline
+
+mission_defaults:
+  risk_targets:                   # PRD §8: chốt từ Z% sau khảo sát (Q-6) — giá trị dưới là [khởi điểm]
+    alpha_false_alarm: 0.05
+    beta_miss: 0.02
+  budget:
+    max_views: 6
+    max_on_station_s: 300
+  geofence:
+    radius_around_target_m: 400   # giao với vùng được phép bay của trạm
+    min_height_agl_m: 40
+    max_height_agl_m: 120         # theo giấy phép bay
+  profiles:
+    agent: mvp_default
+    cv: mvp_rpi5
+
+prior_model:
+  method: landcover_table         # constant | landcover_table | logistic_historical
+  clamp: {b0_min: 0.02, b0_max: 0.98}
+  constant: {b0: 0.3}
+  landcover_table:
+    version: "0.1.0"
+    provenance: elicited          # elicited (chuyên gia) | fitted (từ nhãn vàng)
+    # [khởi điểm] — giá trị chuyên gia kiểm lâm đề xuất, CHƯA hiệu chỉnh
+    table:
+      - {landcover: NATURAL_FOREST,      season: DRY, b0: 0.35}
+      - {landcover: NATURAL_FOREST,      season: WET, b0: 0.15}
+      - {landcover: PLANTATION_FOREST,   season: DRY, b0: 0.35}
+      - {landcover: PLANTATION_FOREST,   season: WET, b0: 0.15}
+      - {landcover: CULTIVATED_OR_SWIDDEN, season: DRY, b0: 0.60}
+      - {landcover: CULTIVATED_OR_SWIDDEN, season: WET, b0: 0.30}
+      - {landcover: GRASS_SHRUB,         season: DRY, b0: 0.45}
+      - {landcover: OTHER,               season: ANY, b0: 0.25}
+
+adjudicator:
+  method: rules_yaml              # rules_yaml | scoring_model | llm_report_assist(chỉ tóm tắt)
+  rules:                          # khớp từ trên xuống, dừng ở luật đầu tiên
+    - id: R-01
+      when: {decision: SMOKE_CONFIRMED, landcover_in: [NATURAL_FOREST, PLANTATION_FOREST]}
+      outcome: FOREST_FIRE_URGENT
+    - id: R-02
+      when: {decision: SMOKE_CONFIRMED, landcover_in: [CULTIVATED_OR_SWIDDEN, GRASS_SHRUB]}
+      outcome: SMOKE_ON_CULTIVATED_LAND_REVIEW
+      urgency: {method: distance_to_forest_edge, high_below_m: 200, medium_below_m: 1000}   # [khởi điểm]
+    - id: R-03
+      when: {decision: SMOKE_CONFIRMED}
+      outcome: SMOKE_ON_CULTIVATED_LAND_REVIEW
+    - id: R-04
+      when: {decision: NO_SMOKE}
+      outcome: FALSE_ALARM_NO_SMOKE
+    - id: R-05
+      when: {decision: UNDETERMINED}
+      outcome: UNDETERMINED_HUMAN_REVIEW
+
+notifier:
+  channels: [dashboard, webhook]  # dashboard | webhook | email | sms | zalo_oa
+  webhook_url: ${NOTIFY_WEBHOOK_URL}
+
+storage:
+  evidence_root: /srv/uav/evidence
+  database_url: ${DATABASE_URL}   # PostgreSQL + PostGIS

@@ -1,0 +1,24 @@
+{
+  "header": {
+    "schema": "mission_status",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a02-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:14:30.000Z",
+    "producer": "embedded/mission_executor@0.1.0"
+  },
+  "phase": "RECORDING",
+  "pose": {
+    "lat_deg": 21.822659,
+    "lon_deg": 105.215842,
+    "alt_amsl_m": 288.6,
+    "height_agl_m": 104.2,
+    "yaw_deg": 315.2,
+    "gimbal_pitch_deg": -28.9,
+    "gimbal_yaw_deg": 315.0
+  },
+  "battery_pct": 71.5,
+  "current_view_id": 1,
+  "detail": "Đang quay clip góc nhìn 1 (hover 2,0 s)"
+}
