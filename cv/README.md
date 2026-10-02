@@ -1,6 +1,6 @@
 # `cv/` — Thị giác máy tính
 
-**Owner:** CV — *(điền tên)* · **Đọc trước:** [`docs/03-architecture/20-cv.md`](../docs/03-architecture/20-cv.md) (đặc biệt **§5 định nghĩa LLR**), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
+**Owner:** CV — *Nguyễn Văn Đạt* · **Đọc trước:** [`docs/03-architecture/20-cv.md`](../docs/03-architecture/20-cv.md) (đặc biệt **§5 định nghĩa LLR**), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
 
 > Biến **một clip** thành **một quan sát đã hiệu chỉnh**: `llr` = ln p(z|SMOKE,c) − ln p(z|NO_SMOKE,c), cộng cờ chất lượng và ngữ cảnh. Sinh artifact **A-01 `observation_model`** cho agent. Chỉ RGB.
 
