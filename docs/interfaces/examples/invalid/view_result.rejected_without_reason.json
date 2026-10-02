@@ -1,0 +1,17 @@
+{
+  "header": {
+    "schema": "view_result",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a06-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:13:40.050Z",
+    "producer": "embedded/mission_executor@0.1.0"
+  },
+  "view_id": 2,
+  "status": "REJECTED",
+  "reject_reason": null,
+  "achieved_pose": null,
+  "clip_id": null,
+  "detail": "Sườn đồi phía Đông cao hơn đường bay 12 m (biên yêu cầu 30 m)"
+}

@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/common.schema.json",
+  "title": "Kiểu dùng chung cho mọi hợp đồng",
+  "$defs": {
+    "header": {
+      "type": "object",
+      "description": "Phần đầu bắt buộc của mọi thông điệp MQTT.",
+      "required": [
+        "schema",
+        "schema_version",
+        "msg_id",
+        "uav_id",
+        "mission_id",
+        "stamp_utc",
+        "producer"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "type": "string",
+          "description": "Tên schema, trùng tên file không kèm .schema.json"
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "msg_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "uav_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "mission_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/mission_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stamp_utc": {
+          "$ref": "#/$defs/utc"
+        },
+        "producer": {
+          "type": "string",
+          "description": "<module>/<service>@<version>",
+          "pattern": "^(agents|cv|embedded|backend)/[a-z0-9_]+@[0-9A-Za-z.+-]+$"
+        }
+      }
+    },
+    "mission_id": {
+      "type": "string",
+      "pattern": "^M-\\d{8}-\\d{3}$"
+    },
+    "utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$",
+      "description": "RFC 3339, UTC, kết thúc bằng Z"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "uri": {
+      "type": "string",
+      "pattern": "^(file|https)://"
+    },
+    "probability": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "geo_point": {
+      "type": "object",
+      "required": [
+        "lat_deg",
+        "lon_deg"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "lat_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lon_deg": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "alt_amsl_m": {
+          "type": "number",
+          "description": "Độ cao so với mực nước biển trung bình (tuỳ chọn)"
+        }
+      }
+    },
+    "view_spec": {
+      "type": "object",
+      "description": "Góc nhìn TƯƠNG ĐỐI MỤC TIÊU. Xem docs/03-architecture/00-overview.md §8.3.",
+      "required": [
+        "bearing_from_target_deg",
+        "horizontal_range_m",
+        "height_above_target_m",
+        "gimbal",
+        "hover_s"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bearing_from_target_deg": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360,
+          "description": "Phương vị của vị trí UAV nhìn từ mục tiêu; 0 = Bắc thật, chiều kim đồng hồ. KHÔNG phải hướng camera."
+        },
+        "horizontal_range_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height_above_target_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "So với mặt đất tại mục tiêu (DEM)"
+        },
+        "gimbal": {
+          "type": "object",
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "LOOK_AT_TARGET",
+                "FIXED_ANGLES"
+              ]
+            },
+            "pitch_offset_deg": {
+              "type": "number",
+              "minimum": -45,
+              "maximum": 45,
+              "default": 0,
+              "description": "Dương = ngẩng lên so với hướng nhìn mục tiêu"
+            },
+            "yaw_offset_deg": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90,
+              "default": 0
+            }
+          }
+        },
+        "hover_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 30
+        }
+      }
+    },
+    "pose": {
+      "type": "object",
+      "required": [
+        "lat_deg",
+        "lon_deg",
+        "alt_amsl_m",
+        "yaw_deg"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "lat_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lon_deg": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "alt_amsl_m": {
+          "type": "number"
+        },
+        "height_agl_m": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "So với mặt đất ngay dưới UAV (DEM)"
+        },
+        "yaw_deg": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360
+        },
+        "gimbal_pitch_deg": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "0 = nằm ngang, âm = chúc xuống"
+        },
+        "gimbal_yaw_deg": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "exclusiveMaximum": 360,
+          "description": "Phương vị tuyệt đối của trục camera"
+        }
+      }
+    },
+    "belief": {
+      "type": "object",
+      "required": [
+        "p_smoke",
+        "log_odds",
+        "sum_llr_effective"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "p_smoke": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "log_odds": {
+          "type": "number"
+        },
+        "sum_llr_effective": {
+          "type": "number",
+          "description": "Tổng LLR hiệu dụng đã cộng, không gồm prior"
+        }
+      }
+    },
+    "onboard_decision": {
+      "enum": [
+        "SMOKE_CONFIRMED",
+        "NO_SMOKE",
+        "UNDETERMINED"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "component",
+        "version",
+        "config_hash"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "component": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "git_sha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{7,40}$"
+        },
+        "methods": {
+          "type": "object",
+          "description": "Tên phương pháp đã chọn cho từng khe registry",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "version"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mission_phase": {
+      "enum": [
+        "IDLE",
+        "RECEIVED",
+        "PREFLIGHT",
+        "WAITING_TAKEOFF",
+        "TRANSIT",
+        "ON_STATION",
+        "MOVING",
+        "SETTLING",
+        "RECORDING",
+        "RETURNING",
+        "LANDED",
+        "UPLOADING",
+        "COMPLETED",
+        "ABORTED"
+      ]
+    },
+    "clip_id": {
+      "type": "string",
+      "pattern": "^M-\\d{8}-\\d{3}/v\\d+$",
+      "description": "{mission_id}/v{view_id}, do embedded cấp"
+    }
+  }
+}

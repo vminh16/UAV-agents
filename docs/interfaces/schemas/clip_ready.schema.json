@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/clip_ready.schema.json",
+  "title": "I-06 clip_ready (embedded → cv)",
+  "description": "Một clip hover-and-stare đã sẵn sàng. Clip KHÔNG đi qua MQTT; chỉ gửi URI + sha256.",
+  "type": "object",
+  "required": [
+    "header",
+    "view_id",
+    "clip_id",
+    "uri",
+    "media",
+    "camera",
+    "frames_meta_uri",
+    "view",
+    "pose_mean",
+    "target",
+    "target_ground_amsl_m",
+    "sun",
+    "settle"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "clip_ready"
+            }
+          }
+        }
+      ]
+    },
+    "view_id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "clip_id": {
+      "$ref": "common.schema.json#/$defs/clip_id"
+    },
+    "uri": {
+      "$ref": "common.schema.json#/$defs/uri"
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "container",
+        "width",
+        "height",
+        "fps",
+        "n_frames",
+        "duration_s",
+        "sha256"
+      ],
+      "properties": {
+        "container": {
+          "enum": [
+            "MP4",
+            "IMAGE_SEQ"
+          ]
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "n_frames": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duration_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "hfov_deg",
+        "vfov_deg",
+        "intrinsics"
+      ],
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "hfov_deg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 180
+        },
+        "vfov_deg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 180
+        },
+        "intrinsics": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "fx",
+                "fy",
+                "cx",
+                "cy"
+              ],
+              "properties": {
+                "fx": {
+                  "type": "number"
+                },
+                "fy": {
+                  "type": "number"
+                },
+                "cx": {
+                  "type": "number"
+                },
+                "cy": {
+                  "type": "number"
+                },
+                "distortion": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "frames_meta_uri": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/uri"
+        }
+      ],
+      "description": "JSONL: mỗi dòng một khung {frame_idx, stamp_utc, pose}"
+    },
+    "view": {
+      "$ref": "common.schema.json#/$defs/view_spec"
+    },
+    "pose_mean": {
+      "$ref": "common.schema.json#/$defs/pose"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/geo_point"
+    },
+    "target_ground_amsl_m": {
+      "type": "number",
+      "description": "Cao độ mặt đất tại mục tiêu theo DEM"
+    },
+    "sun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "azimuth_deg",
+        "elevation_deg"
+      ],
+      "properties": {
+        "azimuth_deg": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360
+        },
+        "elevation_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        }
+      }
+    },
+    "settle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pos_rms_m",
+        "gimbal_rms_deg"
+      ],
+      "properties": {
+        "pos_rms_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "gimbal_rms_deg": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

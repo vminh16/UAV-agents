@@ -1,0 +1,54 @@
+# Cấu hình mặc định của cv/ — profile "mvp_rpi5" (biến thể A) và "mvp_jetson" (biến thể B) ghi đè phần runtime.
+# Nguyên tắc (ADR-004): phương pháp chọn bằng TÊN; ngưỡng ở đây hoặc trong artifact, không trong code.
+
+profile: mvp_rpi5
+schema_version: "0.1.0"
+
+io:
+  mqtt_host: localhost
+  mqtt_port: 1883
+  uav_id: ${UAV_ID}
+  clip_fetch: local_file          # local_file (onboard) | https (CV chạy ở mặt đất)
+  bundle_dir: ${UAV_ARTIFACT_DIR}/cv-bundle/0.1.0
+
+sampling:
+  frames_per_clip: 12             # [khởi điểm] số khung lấy mẫu cho detector
+
+quality_gate:
+  method: heuristic_gate          # heuristic_gate | learned_gate
+  heuristic_gate:
+    min_laplacian_var: 60.0       # [khởi điểm] mờ
+    max_overexposed_frac: 0.25    # [khởi điểm]
+    max_underexposed_frac: 0.40   # [khởi điểm]
+    sun_glare_rel_azimuth_deg: 20 # [khởi điểm] nhìn trong ±20° quanh mặt trời → kiểm tra loá
+    min_frames: 20
+
+stabilization:
+  method: ecc_affine              # none | gimbal_pose_comp | ecc_affine | orb_homography
+
+detector:
+  method: yolo11n                 # yolo11n | yolo11s | yolo26n | yolo26s | rtdetrv2_s | dfine_s | deim_s | yoloe | vsmoked(baseline)
+  input_size: 640
+  min_score: 0.15                 # [khởi điểm] ngưỡng thấp: bộ phân loại clip quyết định, detector chỉ đề xuất vùng
+
+plume_tracker:
+  method: iou_tracker             # iou_tracker | bytetrack | edgetam
+  iou_tracker: {min_iou: 0.2}
+
+motion_features:
+  method: dis_flow                # frame_diff(baseline) | dis_flow | farneback | raft_small | neuflow
+  features: [flow_vertical_mps, flow_divergence, flow_coherence, source_point_score]
+
+clip_classifier:
+  method: gbdt                    # logistic | gbdt | tsm_mobilenetv2 | x3d_xs | movinet_a0
+
+calibrator:
+  method: isotonic_binned         # platt | temperature | isotonic_binned | beta
+  llr_clip: 6.0                   # chặn |LLR| — phải trùng A-01.llr_clip
+
+landcover:
+  method: null                    # V1: segformer_b0 | pidnet_s | dinov2_s_linear | open_vocab
+
+runtime:
+  backend: ncnn                   # onnxruntime | ncnn | tensorrt | hailort
+  max_latency_s: 5.0              # NFR-07 (onboard); profile mặt đất: 15.0

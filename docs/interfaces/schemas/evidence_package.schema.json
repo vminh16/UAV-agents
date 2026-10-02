@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/evidence_package.schema.json",
+  "title": "I-09 evidence_package (embedded → backend)",
+  "description": "Manifest bằng chứng của một nhiệm vụ. Mọi file có sha256.",
+  "type": "object",
+  "required": [
+    "header",
+    "summary",
+    "decision",
+    "observations",
+    "files",
+    "upload_status",
+    "missing"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "evidence_package"
+            }
+          }
+        }
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_utc",
+        "ended_utc",
+        "final_phase"
+      ],
+      "properties": {
+        "started_utc": {
+          "$ref": "common.schema.json#/$defs/utc"
+        },
+        "ended_utc": {
+          "$ref": "common.schema.json#/$defs/utc"
+        },
+        "final_phase": {
+          "$ref": "common.schema.json#/$defs/mission_phase"
+        }
+      }
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "$ref": "agent_decision.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "$ref": "observation.schema.json"
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "uri",
+          "sha256",
+          "size_bytes"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "CLIP",
+              "THUMBNAIL",
+              "FRAMES_META",
+              "FLIGHT_LOG",
+              "MESSAGE_LOG",
+              "CONFIG"
+            ]
+          },
+          "uri": {
+            "$ref": "common.schema.json#/$defs/uri"
+          },
+          "sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clip_id": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/clip_id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "upload_status": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL"
+      ]
+    },
+    "missing": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

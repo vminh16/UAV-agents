@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/agent_decision.schema.json",
+  "title": "I-08 agent_decision (agents → embedded, backend)",
+  "description": "Kết luận onboard về KHÓI (không phải kết quả vận hành) + toàn bộ vết quyết định.",
+  "type": "object",
+  "required": [
+    "header",
+    "decision",
+    "reason",
+    "final_belief",
+    "thresholds",
+    "counts",
+    "steps",
+    "observation_model_version",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "agent_decision"
+            }
+          }
+        }
+      ]
+    },
+    "decision": {
+      "$ref": "common.schema.json#/$defs/onboard_decision"
+    },
+    "reason": {
+      "enum": [
+        "THRESHOLD_REACHED",
+        "BUDGET_EXHAUSTED",
+        "LOW_QUALITY",
+        "VIEW_INFEASIBLE",
+        "OBSERVATION_TIMEOUT",
+        "SAFETY_ABORT",
+        "MISSION_CANCELLED",
+        "LINK_LOSS",
+        "POLICY_ABSTAIN"
+      ]
+    },
+    "final_belief": {
+      "$ref": "common.schema.json#/$defs/belief"
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "upper",
+        "lower",
+        "space",
+        "derivation"
+      ],
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "space": {
+          "enum": [
+            "SUM_LLR",
+            "LOG_ODDS",
+            "POSTERIOR"
+          ]
+        },
+        "derivation": {
+          "type": "string"
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "views_commanded",
+        "views_reached",
+        "views_rejected",
+        "observations_valid",
+        "observations_invalid",
+        "observation_timeouts"
+      ],
+      "properties": {
+        "views_commanded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "views_reached": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "views_rejected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observations_valid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observations_invalid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observation_timeouts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "agent_step.schema.json"
+      }
+    },
+    "observation_model_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance": {
+      "$ref": "common.schema.json#/$defs/provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "SMOKE_CONFIRMED",
+              "NO_SMOKE"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "const": "THRESHOLD_REACHED"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "UNDETERMINED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "not": {
+              "const": "THRESHOLD_REACHED"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

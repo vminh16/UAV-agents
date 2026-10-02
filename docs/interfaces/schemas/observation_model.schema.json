@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/observation_model.schema.json",
+  "title": "A-01 observation_model (cv → agents, file artifact có phiên bản)",
+  "description": "Phân phối LLR theo bin ngữ cảnh góc nhìn và theo giả thuyết, cộng mô hình tương quan giữa các góc nhìn. Agent dùng để lập kế hoạch và tempering.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "version",
+    "created_utc",
+    "provenance",
+    "llr_definition",
+    "llr_clip",
+    "context_bins",
+    "bins",
+    "fallback",
+    "min_samples_per_bin",
+    "inter_view_correlation",
+    "validation"
+  ],
+  "$defs": {
+    "dist": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "family",
+            "mean",
+            "std"
+          ],
+          "properties": {
+            "family": {
+              "const": "GAUSSIAN"
+            },
+            "mean": {
+              "type": "number"
+            },
+            "std": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "family",
+            "edges",
+            "probs"
+          ],
+          "properties": {
+            "family": {
+              "const": "HISTOGRAM"
+            },
+            "edges": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "number"
+              }
+            },
+            "probs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "artifact_type": {
+      "const": "observation_model"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "created_utc": {
+      "$ref": "common.schema.json#/$defs/utc"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline",
+        "pipeline_version",
+        "git_sha",
+        "datasets"
+      ],
+      "properties": {
+        "pipeline": {
+          "type": "string"
+        },
+        "pipeline_version": {
+          "type": "string"
+        },
+        "git_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "datasets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "version",
+              "n_clips"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "n_clips": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "llr_definition": {
+      "const": "ln p(z|SMOKE,c) - ln p(z|NO_SMOKE,c)"
+    },
+    "llr_clip": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "context_bins": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "edges"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "range_m",
+              "height_above_target_m",
+              "sun_rel_azimuth_deg",
+              "sun_elevation_deg",
+              "base_occlusion_ratio"
+            ]
+          },
+          "edges": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "bins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "n",
+          "p_invalid",
+          "llr_given"
+        ],
+        "properties": {
+          "index": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "n": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "SMOKE",
+              "NO_SMOKE"
+            ],
+            "properties": {
+              "SMOKE": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "NO_SMOKE": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "p_invalid": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "llr_given": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "SMOKE",
+              "NO_SMOKE"
+            ],
+            "properties": {
+              "SMOKE": {
+                "$ref": "#/$defs/dist"
+              },
+              "NO_SMOKE": {
+                "$ref": "#/$defs/dist"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "n",
+        "p_invalid",
+        "llr_given"
+      ],
+      "properties": {
+        "n": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "SMOKE",
+            "NO_SMOKE"
+          ],
+          "properties": {
+            "SMOKE": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "NO_SMOKE": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "p_invalid": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "llr_given": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "SMOKE",
+            "NO_SMOKE"
+          ],
+          "properties": {
+            "SMOKE": {
+              "$ref": "#/$defs/dist"
+            },
+            "NO_SMOKE": {
+              "$ref": "#/$defs/dist"
+            }
+          }
+        }
+      }
+    },
+    "min_samples_per_bin": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "inter_view_correlation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "tempering_tau",
+        "rho_mean",
+        "kernel",
+        "notes"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "ASSUMED",
+            "ESTIMATED"
+          ]
+        },
+        "tempering_tau": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "rho_mean": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kernel": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "length_scale_deg"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "ANGULAR_EXP"
+                  ]
+                },
+                "length_scale_deg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ece",
+        "auroc",
+        "notes"
+      ],
+      "properties": {
+        "ece": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "auroc": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

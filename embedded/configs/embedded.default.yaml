@@ -1,0 +1,58 @@
+# Cấu hình mặc định của embedded/ (dịch vụ trên máy tính đồng hành).
+# Tham số FIRMWARE (ArduPilot) KHÔNG nằm ở đây: xem embedded/firmware/params/*.param (đã kiểm chứng HITL).
+# Giá trị [khởi điểm] phải được kiểm chứng trong SITL/HITL trước khi bay.
+
+schema_version: "0.1.0"
+uav_id: ${UAV_ID}
+
+fc_link:
+  method: pymavlink               # pymavlink | mavsdk | mavros2
+  device: /dev/ttyAMA0            # TELEM2; Jetson: /dev/ttyTHS1 hoặc adapter USB
+  baud: 921600
+  firmware: ardupilot_copter      # ardupilot_copter | px4_v1_15
+
+executor:
+  takeoff_mode: pilot_manual      # pilot_manual (MVP, ADR-011) | auto
+  path_policy: climb_move_descend # climb_move_descend | direct_if_clear
+  transit_height_margin_m: 30     # [khởi điểm] trên đỉnh địa hình dọc đường
+  settle_detector:
+    method: threshold             # threshold | variance_window
+    max_pos_err_m: 1.5            # [khởi điểm]
+    max_speed_mps: 0.3            # [khởi điểm]
+    max_gimbal_err_deg: 1.0       # [khởi điểm]
+    hold_s: 1.0
+    timeout_s: 20
+
+safety:
+  geofence_margin_m: 20           # [khởi điểm] biên an toàn bên trong geofence nhiệm vụ
+  terrain:
+    source: srtm_geotiff          # srtm_geotiff | flat (CHỈ SITL — bị chặn khi bay thật)
+    dem_path: /opt/uav/dem/srtm30_vn.tif
+    terrain_margin_m: 40          # [khởi điểm] cộng cả chiều cao tán rừng
+  battery:
+    model: linear_mah             # linear_mah | voltage_curve | learned_from_logs
+    reserve_pct: 25               # PRD: [khởi điểm] 25%
+  link:
+    ground_loss_timeout_s: 15     # PRD: [khởi điểm] 15 s
+  mission_timeout_s: 1200
+
+gimbal:
+  method: siyi_udp                # siyi_udp | mavlink_mount | pwm_servo
+  siyi_udp: {host: 192.168.144.25, port: 37260}
+
+camera:
+  source: rtsp                    # rtsp | csi | uvc | replay (SITL)
+  rtsp_url: rtsp://192.168.144.25:8554/main.264
+  clip_format: mp4_h264           # mp4_h264 | jpeg_seq
+  hfov_deg: 81.0                  # theo thông số camera đã hiệu chuẩn
+  vfov_deg: 51.0
+
+link_bridge:
+  ground_broker: ${GROUND_MQTT_URL}
+  vehicle_state_uplink_hz: 0.5
+  vehicle_state_onboard_hz: 2.0
+  message_log_dir: /data/missions
+
+paths:
+  mission_root: /data/missions
+  artifact_dir: ${UAV_ARTIFACT_DIR}

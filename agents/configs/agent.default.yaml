@@ -1,0 +1,70 @@
+# Cấu hình mặc định của agents/ — profile "mvp_default".
+# Nguyên tắc (ADR-004): phương pháp chọn bằng TÊN qua registry; không có hằng số trong code.
+# Giá trị đánh dấu [khởi điểm] cần kiểm chứng bằng benchmark L0 / dữ liệu thực địa.
+# "from_mission" = lấy từ mission_request; "from_artifact" = lấy từ A-01 observation_model.
+
+profile: mvp_default
+schema_version: "0.1.0"          # phiên bản hợp đồng mà agent nói
+
+io:
+  mqtt_host: localhost
+  mqtt_port: 1883
+  uav_id: ${UAV_ID}
+  observation_model_path: ${UAV_ARTIFACT_DIR}/observation_model/0.1.0/observation_model.json
+
+belief:
+  fusion: tempered_bayes          # naive_bayes | tempered_bayes | kernel_tempered | learned_gru
+  tempered_bayes:
+    tau: from_artifact            # A-01.inter_view_correlation.tempering_tau
+    tau_fallback: 1.0             # chỉ dùng khi thiếu A-01; BẮT BUỘC ghi cảnh báo vào agent_step.warnings
+
+observation_model:
+  method: binned_gaussian         # global_gaussian | binned_gaussian | binned_histogram | learned
+
+view_generator:
+  method: lattice                 # lattice | lattice_with_feasibility_memory | continuous_sampler
+  lattice:                        # [khởi điểm] — PRD/RRD: cần kiểm chứng
+    bearings_deg: {start: 0, step: 45, count: 8}
+    horizontal_ranges_m: [100, 150, 200]
+    heights_above_target_m: [80, 120]
+    hover_s: [2.0]
+    gimbal: {mode: LOOK_AT_TARGET, pitch_offset_deg: 5.0}
+
+planner:
+  method: chernoff_kl_per_cost    # single_shot | fixed_orbit | greedy_info_gain | fixed_view_sprt
+                                  # | chernoff_kl_per_cost | ec2 | dp_belief | pomcp | ppo
+  chernoff_kl_per_cost:
+    revisit_discount: from_artifact   # kernel tương quan theo góc trong A-01; 1.0 nếu không có
+  fixed_orbit:                    # baseline B2
+    n_views: 8
+  dp_belief:                      # baseline B7
+    belief_grid: 201
+  top_k_in_trace: 5
+
+stopping:
+  method: sprt_wald               # sprt_wald | posterior_thresholds | conformal_calibrated | dp_belief
+  sprt_wald:
+    alpha_false_alarm: from_mission
+    beta_miss: from_mission
+  conformal_calibrated:
+    thresholds_artifact: ${UAV_ARTIFACT_DIR}/stopping_thresholds/latest.json
+
+cost_model:
+  method: flight_time             # constant | flight_time | energy
+  flight_time:
+    cruise_speed_mps: 6.0         # [khởi điểm] tốc độ di chuyển giữa các góc nhìn; hiệu chỉnh từ log bay
+    settle_s: 4.0                 # [khởi điểm] ước lượng thời gian ổn định trước khi quay
+
+budget:
+  max_views: from_mission
+  max_on_station_s: from_mission
+
+abstain:
+  max_consecutive_invalid: 3      # [khởi điểm]
+  max_observation_timeouts: 2     # [khởi điểm]
+
+timeouts:
+  view_result_s: 180              # [khởi điểm] — 50-interfaces §5
+  observation_s: 20               # onboard; dùng 45 khi CV chạy mặt đất (profile mvp_ground_cv)
+
+random_seed: 12345                # tái lập khi phát lại (NFR-04)

@@ -1,0 +1,215 @@
+{
+  "artifact_type": "observation_model",
+  "version": "0.1.0",
+  "created_utc": "2026-09-30T08:00:00.000Z",
+  "provenance": {
+    "pipeline": "cv/perception_service",
+    "pipeline_version": "0.1.0",
+    "git_sha": "5f726af",
+    "datasets": [
+      {
+        "name": "boreal_forest_fire_uav",
+        "version": "2025",
+        "n_clips": 180
+      },
+      {
+        "name": "vn_field_pilot",
+        "version": "0.1",
+        "n_clips": 64
+      }
+    ]
+  },
+  "llr_definition": "ln p(z|SMOKE,c) - ln p(z|NO_SMOKE,c)",
+  "llr_clip": 6.0,
+  "context_bins": [
+    {
+      "name": "range_m",
+      "edges": [
+        0,
+        125,
+        175,
+        250
+      ]
+    },
+    {
+      "name": "sun_rel_azimuth_deg",
+      "edges": [
+        0,
+        45,
+        180
+      ]
+    }
+  ],
+  "bins": [
+    {
+      "index": [
+        0,
+        0
+      ],
+      "n": {
+        "SMOKE": 9,
+        "NO_SMOKE": 14
+      },
+      "p_invalid": 0.31,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 1.2,
+          "std": 1.6
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -0.9,
+          "std": 1.5
+        }
+      }
+    },
+    {
+      "index": [
+        0,
+        1
+      ],
+      "n": {
+        "SMOKE": 26,
+        "NO_SMOKE": 31
+      },
+      "p_invalid": 0.06,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 2.6,
+          "std": 1.3
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -2.3,
+          "std": 1.2
+        }
+      }
+    },
+    {
+      "index": [
+        1,
+        0
+      ],
+      "n": {
+        "SMOKE": 8,
+        "NO_SMOKE": 12
+      },
+      "p_invalid": 0.28,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 1.0,
+          "std": 1.7
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -0.8,
+          "std": 1.6
+        }
+      }
+    },
+    {
+      "index": [
+        1,
+        1
+      ],
+      "n": {
+        "SMOKE": 34,
+        "NO_SMOKE": 40
+      },
+      "p_invalid": 0.05,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 2.2,
+          "std": 1.4
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -2.0,
+          "std": 1.3
+        }
+      }
+    },
+    {
+      "index": [
+        2,
+        0
+      ],
+      "n": {
+        "SMOKE": 6,
+        "NO_SMOKE": 9
+      },
+      "p_invalid": 0.35,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 0.7,
+          "std": 1.8
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -0.6,
+          "std": 1.7
+        }
+      }
+    },
+    {
+      "index": [
+        2,
+        1
+      ],
+      "n": {
+        "SMOKE": 22,
+        "NO_SMOKE": 27
+      },
+      "p_invalid": 0.08,
+      "llr_given": {
+        "SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": 1.6,
+          "std": 1.5
+        },
+        "NO_SMOKE": {
+          "family": "GAUSSIAN",
+          "mean": -1.5,
+          "std": 1.4
+        }
+      }
+    }
+  ],
+  "fallback": {
+    "n": {
+      "SMOKE": 105,
+      "NO_SMOKE": 133
+    },
+    "p_invalid": 0.12,
+    "llr_given": {
+      "SMOKE": {
+        "family": "GAUSSIAN",
+        "mean": 1.8,
+        "std": 1.6
+      },
+      "NO_SMOKE": {
+        "family": "GAUSSIAN",
+        "mean": -1.7,
+        "std": 1.5
+      }
+    }
+  },
+  "min_samples_per_bin": 10,
+  "inter_view_correlation": {
+    "method": "ASSUMED",
+    "tempering_tau": 0.7,
+    "rho_mean": null,
+    "kernel": null,
+    "notes": "Chưa có đủ chuỗi đa góc để ước lượng ρ; τ = 0,7 là giả định thận trọng. Bin có n < 10 dùng fallback."
+  },
+  "validation": {
+    "ece": 0.048,
+    "auroc": 0.93,
+    "notes": "VÍ DỤ MINH HOẠ — số liệu không phải kết quả thật"
+  }
+}

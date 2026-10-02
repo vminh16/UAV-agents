@@ -1,0 +1,219 @@
+{
+  "header": {
+    "schema": "agent_decision",
+    "schema_version": "0.1.0",
+    "msg_id": "7f3c2a10-5b6e-4c1d-9a12-0c1d2e3f4a5b",
+    "uav_id": "uav-01",
+    "mission_id": "M-20261002-001",
+    "stamp_utc": "2026-10-02T03:14:35.950Z",
+    "producer": "agents/agent_runtime@0.1.0"
+  },
+  "decision": "SMOKE_CONFIRMED",
+  "reason": "THRESHOLD_REACHED",
+  "final_belief": {
+    "p_smoke": 0.9263,
+    "log_odds": 2.531,
+    "sum_llr_effective": 3.15
+  },
+  "thresholds": {
+    "method": "sprt_wald",
+    "upper": 2.9755,
+    "lower": -3.8607,
+    "space": "SUM_LLR",
+    "derivation": "upper = ln((1-β)/α), lower = ln(β/(1-α)) với α = 0.05, β = 0.02 từ mission_request.risk_targets"
+  },
+  "counts": {
+    "views_commanded": 3,
+    "views_reached": 2,
+    "views_rejected": 1,
+    "observations_valid": 2,
+    "observations_invalid": 0,
+    "observation_timeouts": 0
+  },
+  "steps": [
+    {
+      "header": {
+        "schema": "agent_step",
+        "schema_version": "0.1.0",
+        "msg_id": "7f3c2a10-5b6e-4c1d-9a10-0c1d2e3f4a5b",
+        "uav_id": "uav-01",
+        "mission_id": "M-20261002-001",
+        "stamp_utc": "2026-10-02T03:13:41.200Z",
+        "producer": "agents/agent_runtime@0.1.0"
+      },
+      "step": 0,
+      "view_id": 0,
+      "observation_ref": {
+        "clip_id": "M-20261002-001/v0",
+        "valid": true,
+        "llr": 2.1,
+        "llr_effective": 1.47
+      },
+      "belief_before": {
+        "p_smoke": 0.35,
+        "log_odds": -0.619,
+        "sum_llr_effective": 0.0
+      },
+      "belief_after": {
+        "p_smoke": 0.7008,
+        "log_odds": 0.851,
+        "sum_llr_effective": 1.47
+      },
+      "candidates": [
+        {
+          "view": {
+            "bearing_from_target_deg": 135.0,
+            "horizontal_range_m": 150.0,
+            "height_above_target_m": 100.0,
+            "gimbal": {
+              "mode": "LOOK_AT_TARGET",
+              "pitch_offset_deg": 5.0,
+              "yaw_offset_deg": 0.0
+            },
+            "hover_s": 2.0
+          },
+          "score": 0.042,
+          "cost_s": 38.5,
+          "feasible": true
+        },
+        {
+          "view": {
+            "bearing_from_target_deg": 90.0,
+            "horizontal_range_m": 200.0,
+            "height_above_target_m": 80.0,
+            "gimbal": {
+              "mode": "LOOK_AT_TARGET",
+              "pitch_offset_deg": 5.0,
+              "yaw_offset_deg": 0.0
+            },
+            "hover_s": 2.0
+          },
+          "score": 0.047,
+          "cost_s": 31.0,
+          "feasible": false,
+          "note": "REJECTED: TERRAIN_CLEARANCE"
+        }
+      ],
+      "chosen": {
+        "action": "VIEW",
+        "view_id": 1,
+        "view": {
+          "bearing_from_target_deg": 135.0,
+          "horizontal_range_m": 150.0,
+          "height_above_target_m": 100.0,
+          "gimbal": {
+            "mode": "LOOK_AT_TARGET",
+            "pitch_offset_deg": 5.0,
+            "yaw_offset_deg": 0.0
+          },
+          "hover_s": 2.0
+        },
+        "decision": null
+      },
+      "rationale": "Λ = 1.47 chưa vượt ngưỡng [-3.86, 2.98]. Chọn phương vị 135° vì KL kỳ vọng/giây cao nhất trong các góc khả thi; góc 90° bị từ chối do địa hình.",
+      "warnings": [],
+      "provenance": {
+        "component": "agents/agent_runtime",
+        "version": "0.1.0",
+        "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+        "git_sha": "5f726af",
+        "methods": {
+          "belief.fusion": "tempered_bayes",
+          "observation_model": "binned_gaussian",
+          "view_generator": "lattice",
+          "planner": "chernoff_kl_per_cost",
+          "stopping": "sprt_wald",
+          "cost_model": "flight_time"
+        },
+        "artifacts": [
+          {
+            "name": "observation_model",
+            "version": "0.1.0"
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "header": {
+        "schema": "agent_step",
+        "schema_version": "0.1.0",
+        "msg_id": "7f3c2a10-5b6e-4c1d-9a11-0c1d2e3f4a5b",
+        "uav_id": "uav-01",
+        "mission_id": "M-20261002-001",
+        "stamp_utc": "2026-10-02T03:14:35.900Z",
+        "producer": "agents/agent_runtime@0.1.0"
+      },
+      "step": 1,
+      "view_id": 1,
+      "observation_ref": {
+        "clip_id": "M-20261002-001/v1",
+        "valid": true,
+        "llr": 2.4,
+        "llr_effective": 1.68
+      },
+      "belief_before": {
+        "p_smoke": 0.7008,
+        "log_odds": 0.851,
+        "sum_llr_effective": 1.47
+      },
+      "belief_after": {
+        "p_smoke": 0.9263,
+        "log_odds": 2.531,
+        "sum_llr_effective": 3.15
+      },
+      "candidates": [],
+      "chosen": {
+        "action": "TERMINATE",
+        "view_id": null,
+        "view": null,
+        "decision": "SMOKE_CONFIRMED"
+      },
+      "rationale": "Λ = 3.15 ≥ ngưỡng trên 2.98 (SPRT, α = 0.05, β = 0.02) → SMOKE_CONFIRMED sau 2 góc nhìn hợp lệ.",
+      "warnings": [],
+      "provenance": {
+        "component": "agents/agent_runtime",
+        "version": "0.1.0",
+        "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+        "git_sha": "5f726af",
+        "methods": {
+          "belief.fusion": "tempered_bayes",
+          "observation_model": "binned_gaussian",
+          "view_generator": "lattice",
+          "planner": "chernoff_kl_per_cost",
+          "stopping": "sprt_wald",
+          "cost_model": "flight_time"
+        },
+        "artifacts": [
+          {
+            "name": "observation_model",
+            "version": "0.1.0"
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ],
+  "observation_model_version": "0.1.0",
+  "provenance": {
+    "component": "agents/agent_runtime",
+    "version": "0.1.0",
+    "config_hash": "sha256:11f675070af01973789a0e982cd6ea40447455b2565c0eb7f0ab4ce69c7158d6",
+    "git_sha": "5f726af",
+    "methods": {
+      "belief.fusion": "tempered_bayes",
+      "observation_model": "binned_gaussian",
+      "view_generator": "lattice",
+      "planner": "chernoff_kl_per_cost",
+      "stopping": "sprt_wald",
+      "cost_model": "flight_time"
+    },
+    "artifacts": [
+      {
+        "name": "observation_model",
+        "version": "0.1.0"
+      }
+    ],
+    "warnings": []
+  }
+}

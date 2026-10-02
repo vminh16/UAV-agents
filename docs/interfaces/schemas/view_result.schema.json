@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/view_result.schema.json",
+  "title": "I-05 view_result (embedded → agents)",
+  "description": "Kết quả thực thi một view_command.",
+  "type": "object",
+  "required": [
+    "header",
+    "view_id",
+    "status",
+    "reject_reason",
+    "achieved_pose",
+    "clip_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "view_result"
+            }
+          }
+        }
+      ]
+    },
+    "view_id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "enum": [
+        "REACHED",
+        "REJECTED",
+        "ABORTED",
+        "TIMEOUT"
+      ]
+    },
+    "reject_reason": {
+      "anyOf": [
+        {
+          "enum": [
+            "INVALID_SPEC",
+            "OUTSIDE_GEOFENCE",
+            "TERRAIN_CLEARANCE",
+            "BATTERY_RESERVE",
+            "ON_STATION_TIME",
+            "NOT_READY",
+            "OTHER"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "achieved_pose": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/pose"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "clip_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/clip_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "REACHED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "achieved_pose": {
+            "$ref": "common.schema.json#/$defs/pose"
+          },
+          "clip_id": {
+            "$ref": "common.schema.json#/$defs/clip_id"
+          },
+          "reject_reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "REJECTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reject_reason": {
+            "type": "string"
+          },
+          "clip_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

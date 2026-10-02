@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/mission_status.schema.json",
+  "title": "I-02 mission_status (embedded → backend)",
+  "description": "Trạng thái nhiệm vụ, 1 Hz và khi đổi pha.",
+  "type": "object",
+  "required": [
+    "header",
+    "phase",
+    "pose",
+    "battery_pct",
+    "current_view_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "mission_status"
+            }
+          }
+        }
+      ]
+    },
+    "phase": {
+      "$ref": "common.schema.json#/$defs/mission_phase"
+    },
+    "pose": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/pose"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "battery_pct": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_view_id": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    }
+  }
+}

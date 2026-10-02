@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uav-agents.local/schemas/view_command.schema.json",
+  "title": "I-04 view_command (agents → embedded)",
+  "description": "Đề xuất góc nhìn kế tiếp, tương đối mục tiêu. Embedded có thể từ chối; không bao giờ tự thay bằng góc khác.",
+  "type": "object",
+  "required": [
+    "header",
+    "view_id",
+    "view",
+    "intent"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/header"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "view_command"
+            }
+          }
+        }
+      ]
+    },
+    "view_id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "view": {
+      "$ref": "common.schema.json#/$defs/view_spec"
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rationale"
+      ],
+      "properties": {
+        "rationale": {
+          "type": "string"
+        },
+        "expected_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_cost_s": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
