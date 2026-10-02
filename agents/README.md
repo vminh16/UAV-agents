@@ -1,6 +1,6 @@
 # `agents/` — Tác tử onboard
 
-**Owner:** AGT — *(điền tên)* · **Đọc trước:** [`docs/03-architecture/10-agents.md`](../docs/03-architecture/10-agents.md), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
+**Owner:** AGT — *Nguyễn Văn Minh* · **Đọc trước:** [`docs/03-architecture/10-agents.md`](../docs/03-architecture/10-agents.md), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
 
 > Module mang **tính tác tử — mốc MVP**: tự quyết **nhìn ở đâu tiếp**, **nhìn tiếp hay dừng**, **kết luận gì** (`SMOKE_CONFIRMED` / `NO_SMOKE` / `UNDETERMINED`).
 
