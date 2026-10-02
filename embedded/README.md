@@ -1,6 +1,6 @@
 # `embedded/` — Nhúng: bay, an toàn, camera, nền tảng onboard
 
-**Owner:** EMB — *(điền tên)* · **Đọc trước:** [`docs/03-architecture/30-embedded.md`](../docs/03-architecture/30-embedded.md), [`60-hardware.md`](../docs/03-architecture/60-hardware.md), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
+**Owner:** EMB — *Kiều Hải Nam* · **Đọc trước:** [`docs/03-architecture/30-embedded.md`](../docs/03-architecture/30-embedded.md), [`60-hardware.md`](../docs/03-architecture/60-hardware.md), [`00-overview.md`](../docs/03-architecture/00-overview.md) §1–8, 13–14, [`50-interfaces.md`](../docs/03-architecture/50-interfaces.md)
 
 > Đưa camera tới **đúng góc nhìn được yêu cầu một cách an toàn**, rồi quay một **clip ổn định có đủ siêu dữ liệu**. Module này **giữ thẩm quyền an toàn**: lệnh không an toàn bị **từ chối kèm lý do**, không bao giờ bị sửa ngầm.
 
