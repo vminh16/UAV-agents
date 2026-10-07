@@ -28,6 +28,39 @@ cv/
 └── tests/      # contract, LLR không phụ thuộc tỷ lệ dương, valid=false, latency, fake_perception
 ```
 
+## Cài đặt và chạy test
+
+```powershell
+cd cv
+py -3.12 -m venv .venv
+.\.venv\Scripts\python -m pip install -e ".[dev]"
+.\.venv\Scripts\python -m pytest            # test MQTT tự bỏ qua nếu không có broker ở localhost:1883
+```
+
+## Stub `fake_perception` (cho AGT / EMB / BE)
+
+Tiến trình độc lập: nghe `uav/{uav_id}/embedded/clip_ready`, chờ 1,5 s, phát `uav/{uav_id}/cv/observation` hợp lệ theo schema. `context` tính thật từ tư thế trong `clip_ready`; LLR giả lập theo kịch bản trong [`configs/fake_perception.yaml`](configs/fake_perception.yaml).
+
+| Kịch bản | Kết quả |
+|---|---|
+| `smoke` | `valid=true`, LLR ∈ [+1,5, +3,5] |
+| `no_smoke` | `valid=true`, LLR ∈ [−3,0, −1,0] |
+| `invalid` | `valid=false`, `llr=null`, `invalid_reasons=["SUN_GLARE"]` |
+| `random` (mặc định) | H ~ Bernoulli(`p_smoke`), hỏng ngẫu nhiên theo `p_invalid` |
+
+Ngoài ra, ở mọi kịch bản: camera nhìn trong ±20° quanh mặt trời → `SUN_GLARE`; mục tiêu ngoài khung hình → `TARGET_OUT_OF_FOV` (tắt bằng `--no-geometry-gate`). Nhãn thật nằm ở `features.stub_truth_smoke` để chấm điểm agent.
+
+```powershell
+# Cần mosquitto (hoặc broker MQTT bất kỳ) đang chạy
+python cv/tests/fake_perception.py                                   # random, nghe mọi UAV
+python cv/tests/fake_perception.py --scenario smoke --seed 42
+python cv/tests/fake_perception.py --sequence no_smoke,invalid,smoke,smoke --uav-id uav-01
+python cv/tests/fake_perception.py --host 192.168.1.10 --delay 3
+
+# Không cần broker: in observation cho một clip_ready
+python cv/tests/fake_perception.py --once docs/interfaces/examples/clip_ready.example.json --scenario invalid
+```
+
 ## Định nghĩa hoàn thành MVP (tóm tắt)
 
 - [ ] `perception_service` trả `observation` hợp lệ trong ≤ 5 s/clip onboard (≤ 15 s mặt đất)

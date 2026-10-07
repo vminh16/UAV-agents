@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uav-cv"
+version = "0.1.0"
+description = "Module thị giác máy tính: clip hover-and-stare -> observation (LLR đã hiệu chỉnh)"
+requires-python = ">=3.10"
+dependencies = [
+    "paho-mqtt>=2.0",
+    "jsonschema>=4.18",
+    "rfc3339-validator",
+    "pyyaml>=6.0",
+    "numpy>=1.24",
+    # Chỉ cài bản contrib; cài chung với opencv-python sẽ xung đột module cv2.
+    "opencv-contrib-python>=4.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "mqtt: cần MQTT broker đang chạy (mặc định localhost:1883)",
+]

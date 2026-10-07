@@ -1,0 +1,38 @@
+# Cấu hình stub fake_perception (20-cv §9, 50-interfaces §6).
+# Chỉ phục vụ kiểm thử tích hợp cho AGT/EMB/BE. Số LLR ở đây là GIẢ LẬP, không phải mô hình.
+
+schema_version: "0.1.0"
+observation_model_version: "0.1.0"
+processing_delay_s: 1.5          # giả lập thời gian xử lý một clip
+
+io:
+  mqtt_host: localhost
+  mqtt_port: 1883
+  uav_id: "+"                    # "+" = nghe mọi UAV; trả lời về đúng uav_id trong header của clip_ready
+
+# Kịch bản: smoke (H1) | no_smoke (H0) | invalid | random
+scenario: random
+# Nếu khác rỗng: áp lần lượt cho từng clip nhận được (lặp vòng), ghi đè `scenario`.
+# Ví dụ: [no_smoke, invalid, smoke, smoke]
+sequence: []
+
+random:
+  p_smoke: 0.5                   # H ~ Bernoulli(p_smoke)
+  p_invalid: 0.1                 # tỷ lệ clip hỏng ngẫu nhiên
+
+llr_range:
+  smoke: [1.5, 3.5]
+  no_smoke: [-3.0, -1.0]
+llr_clip: 6.0                    # trùng calibrator.llr_clip trong pipeline.default.yaml
+
+invalid:
+  reasons: [SUN_GLARE]           # lý do cho kịch bản `invalid`
+  random_reasons: [BLUR, OVEREXPOSED, UNDEREXPOSED, SUN_GLARE]   # bốc ngẫu nhiên khi hỏng theo p_invalid
+
+# Cổng hình học: dùng tư thế thật trong clip_ready để đánh dấu lỗi như pipeline thật sẽ làm.
+geometry_gate:
+  enabled: true
+  sun_glare_rel_azimuth_deg: 20  # trùng quality_gate.heuristic_gate.sun_glare_rel_azimuth_deg
+  target_out_of_fov: true
+
+seed: null                       # đặt số nguyên để tái lập chuỗi quan sát
